@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Dashboard - LabaTa</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f8fb; margin: 0; padding: 0; color: #333; }
+        nav { background: #00a8cc; color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .brand { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        nav a { color: white; margin-left: 20px; text-decoration: none; font-weight: 500; }
+        nav a:hover { text-decoration: underline; }
+        .container { padding: 40px; max-width: 1200px; margin: auto; }
+        .welcome-banner { background: linear-gradient(135deg, #00b4d2, #0077b6); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,180,210,0.2); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #00b4d2; }
+        .card h3 { margin-top: 0; color: #0077b6; }
+        button.logout-btn { background: none; border: none; color: white; cursor: pointer; font-size: 16px; font-weight: 500; margin-left: 20px; padding: 0; }
+        button.logout-btn:hover { text-decoration: underline; }
+        .action-btn { display: inline-block; background: #00b4d2; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; margin-top: 10px; }
+        .action-btn:hover { background: #0077b6; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="brand">🧺 LabaTa Customer Portal</div>
+        <div>
+            <span>Welcome, <strong>{{ request.user.username }}</strong></span>
+            <a href="{% url 'profile' %}">My Profile</a>
+            <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="welcome-banner">
+            <h1>Fresh & Clean, Right on Time!</h1>
+            <p>Track your laundry drop-offs, check active washing statuses, and manage your preferences with LabaTa.</p>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>Current Laundry Status</h3>
+                <p>You have no active loads running right now.</p>
+                <a href="#" class="action-btn">Book New Wash</a>
+            </div>
+            <div class="card">
+                <h3>Order History</h3>
+                <p>View receipts and past completed cycles.</p>
+                <a href="#" class="action-btn">View History</a>
+            </div>
+            <div class="card">
+                <h3>Reward Points</h3>
+                <p>Earn points on every wash and fold!</p>
+                <p style="font-size: 22px; font-weight: bold; color: #00b4d2; margin: 10px 0 0 0;">150 Points</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

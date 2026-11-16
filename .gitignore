@@ -1,6 +1,14 @@
-venv/
+# Python / Virtual Environment
+labata-venv/
 __pycache__/
-*.sqlite3
+*.py[cod]
+*$py.class
+
+# Environment variables & Secrets
 .env
-media/
-staticfiles/
+
+# Local Database
+db.sqlite3
+
+# IDE
+.vscode/

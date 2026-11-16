@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 40px; }
+        .card { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-top: 0; }
+        form p { margin-bottom: 15px; }
+        form label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        form input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #007bff; text-decoration: none; }
+        .messages { background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <a href="{% url 'dashboard_redirect' %}" class="back-link">&larr; Back to Dashboard</a>
+        <h2>My Profile</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="messages">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+</body>
+</html>
