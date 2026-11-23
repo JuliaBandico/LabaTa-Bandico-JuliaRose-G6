@@ -3,14 +3,28 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+class Shop(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    is_active = models.BooleanField(default=True)  # False = subscription ended
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
 class UserProfile(models.Model):
     ROLE_CHOICES = [
-        ('admin', 'Admin'),
         ('customer', 'Customer'),
+        ('counter_staff', 'Counter_staff'),
+        ('shop_owner', 'Shop_owner'),
+        ('admin', 'Admin'),
     ]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')  # keep your existing default
+    shop = models.ForeignKey('Shop', null=True, blank=True, on_delete=models.SET_NULL, related_name='members')
     contact_number = models.CharField(max_length=15, blank=True, null=True)
     profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
 

@@ -1,0 +1,21 @@
+{% extends "accounts/manage_base.html" %}
+{% block title %}Owner Dashboard - LabaTa{% endblock %}
+{% block content %}
+<div class="banner">
+    <h1>{{ shop.name }}</h1>
+    <p>Manage your counter staff and customers, set your prices, and watch your daily revenue.</p>
+</div>
+<div class="grid">
+    <div class="card"><h3>Active Orders</h3><p>Not yet claimed or cancelled.</p>
+        <div class="stat">{{ order_stats.active }}</div><br><a class="card-link" href="{% url 'orders:list' %}">View all orders →</a></div>
+    <div class="card"><h3>Today's Revenue</h3><p>Cash from today's orders (cancelled excluded).</p>
+        <div class="stat ok">₱{{ order_stats.today_revenue }}</div>
+        <p style="margin:8px 0 0;">{{ order_stats.today_count }} order{{ order_stats.today_count|pluralize }} today</p></div>
+    <div class="card"><h3>Counter Staff</h3><p>Active staff accounts.</p>
+        <div class="stat">{{ order_stats.staff }}</div><br><a class="card-link" href="{% url 'manage:staff_list' %}">Manage staff →</a></div>
+    <div class="card"><h3>Customers</h3><p>Active customers of your shop.</p>
+        <div class="stat ok">{{ order_stats.customers }}</div><br><a class="card-link" href="{% url 'manage:customer_list' %}">View customers →</a></div>
+</div>
+<a class="btn" href="{% url 'manage:staff_create' %}">+ New staff account</a>
+<a class="btn gray" href="{% url 'orders:services' %}">Services &amp; prices</a>
+{% endblock %}

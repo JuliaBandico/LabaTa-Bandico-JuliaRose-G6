@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Counter Staff Dashboard - LabaTa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #1e293b; --text-muted: #64748b;
+            --primary: #0284c7; --accent-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            --border-color: #e2e8f0; --success: #10b981;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; }
+        nav { background: var(--card-bg); border-bottom: 1px solid var(--border-color); padding: 16px 48px;
+              display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; }
+        .brand-container { display: flex; align-items: center; gap: 12px; }
+        .brand-icon { background: var(--accent-gradient); color: white; width: 38px; height: 38px; border-radius: 10px;
+                      display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .brand-title { font-size: 20px; font-weight: 700; color: #0f172a; }
+        .nav-links { display: flex; align-items: center; gap: 24px; }
+        .nav-user { font-size: 14px; color: var(--text-muted); }
+        .nav-user strong { color: var(--text-main); }
+        nav a { color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 500; }
+        nav a:hover { color: var(--primary); }
+        button.logout-btn { background: #fee2e2; color: #dc2626; border: none; padding: 8px 16px; border-radius: 8px;
+                            cursor: pointer; font-size: 14px; font-weight: 600; }
+        .container { max-width: 1280px; margin: 40px auto; padding: 0 32px; }
+        .welcome-banner { background: var(--accent-gradient); color: white; padding: 40px; border-radius: 20px; margin-bottom: 32px; }
+        .welcome-banner h1 { margin: 0 0 10px; font-size: 30px; }
+        .welcome-banner p { margin: 0 0 20px; opacity: .9; }
+        .btn { display: inline-block; background: white; color: #0369a1; padding: 10px 18px; border-radius: 8px;
+               text-decoration: none; font-weight: 600; margin-right: 10px; }
+        .btn.outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,.6); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 28px; border-radius: 16px; }
+        .card h3 { margin: 0 0 8px; font-size: 16px; }
+        .card p { margin: 0 0 16px; font-size: 14px; color: var(--text-muted); }
+        .stat-number { font-size: 34px; font-weight: 700; color: var(--primary); }
+        .stat-number.success { color: var(--success); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        th { color: var(--text-muted); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="brand-container">
+            <div class="brand-icon">🧺</div>
+            <div class="brand-title">LabaTa Counter</div>
+        </div>
+        <div class="nav-links">
+            <span class="nav-user">Counter Staff: <strong>{{ request.user.username }}</strong></span>
+            <a href="{% url 'orders:list' %}">Orders</a>
+            <a href="{% url 'profile' %}">My Profile</a>
+            <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-banner">
+            <h1>Counter Terminal</h1>
+            <p>Take in new laundry, compute cash and change, and move orders through each stage.</p>
+            <a href="{% url 'orders:create' %}" class="btn">+ New order</a>
+            <a href="{% url 'orders:list' %}" class="btn outline">View all orders</a>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Active Orders</h3>
+                <p>Orders not yet claimed or cancelled.</p>
+                <div class="stat-number">{{ order_stats.active }}</div>
+            </div>
+            <div class="card">
+                <h3>Ready for Pickup</h3>
+                <p>Waiting for the customer to claim.</p>
+                <div class="stat-number success">{{ order_stats.ready }}</div>
+            </div>
+            <div class="card">
+                <h3>Orders Today</h3>
+                <p>Orders taken since midnight.</p>
+                <div class="stat-number">{{ order_stats.today_count }}</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>In progress</h3>
+            <p>Oldest orders first.</p>
+            <table>
+                <tr><th>#</th><th>Customer</th><th>Status</th><th>Total</th><th></th></tr>
+                {% for o in in_progress %}
+                <tr>
+                    <td>{{ o.pk }}</td>
+                    <td>{{ o.customer.username }}</td>
+                    <td>{{ o.get_status_display }}</td>
+                    <td>₱{{ o.total }}</td>
+                    <td><a href="{% url 'orders:detail' o.pk %}">Open</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No orders in progress.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends "orders/base_orders.html" %}
+{% block content %}
+<h2>Order #{{ order.pk }} <small>({{ order.get_status_display }})</small></h2>
+{% include "orders/_messages.html" %}
+
+<p>Customer: {{ order.customer.username }} · Handled by: {{ order.created_by.username }}</p>
+<p>Placed: {{ order.created_at|date:"M d, Y h:i A" }}{% if order.notes %} · Notes: {{ order.notes }}{% endif %}</p>
+
+<table>
+  <tr><th>Item</th><th>Qty</th><th>Unit</th><th>Subtotal</th></tr>
+  {% for i in order.items.all %}
+  <tr><td>{{ i.service.name }}</td><td>{{ i.quantity }}</td><td>₱{{ i.unit_price }}</td><td>₱{{ i.subtotal }}</td></tr>
+  {% endfor %}
+  <tr><th colspan="3">Total</th><th>₱{{ order.total }}</th></tr>
+  <tr><td colspan="3">Cash rendered</td><td>₱{{ order.cash_rendered }}</td></tr>
+  <tr><td colspan="3">Change</td><td>₱{{ order.change }}</td></tr>
+</table>
+
+<h3>Digital receipt / claim pass</h3>
+<p>Claim code: <strong>{{ order.claim_code }}</strong></p>
+
+{% if can_manage %}
+  {% if order.next_status %}
+  <form method="post" action="{% url 'orders:advance' order.pk %}" style="display:inline">
+    {% csrf_token %}<button>Move to next stage ({{ order.next_status.label }})</button>
+  </form>
+  {% endif %}
+  {% if order.is_editable %}
+    <a href="{% url 'orders:update' order.pk %}">Edit</a>
+    <form method="post" action="{% url 'orders:cancel' order.pk %}" style="display:inline"
+          onsubmit="return confirm('Cancel this order?')">{% csrf_token %}<button>Cancel order</button></form>
+  {% endif %}
+{% endif %}
+{% if can_delete %}<a href="{% url 'orders:delete' order.pk %}">Delete</a>{% endif %}
+
+<p><a href="{% url 'orders:list' %}">← Back to orders</a></p>
+{% endblock %}

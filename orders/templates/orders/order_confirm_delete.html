@@ -1,0 +1,6 @@
+{% extends "orders/base_orders.html" %}
+{% block content %}
+<h2>Delete order #{{ order.pk }}?</h2>
+<p>This permanently removes the order and its items.</p>
+<form method="post">{% csrf_token %}<button>Yes, delete</button> <a href="{% url 'orders:detail' order.pk %}">No, go back</a></form>
+{% endblock %}

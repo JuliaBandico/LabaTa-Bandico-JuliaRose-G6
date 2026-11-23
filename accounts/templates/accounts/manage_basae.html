@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}LabaTa{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg:#f8fafc; --card:#fff; --text:#1e293b; --muted:#64748b; --primary:#0284c7;
+                --grad:linear-gradient(135deg,#0284c7 0%,#0369a1 100%); --border:#e2e8f0; --ok:#10b981; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); margin:0; }
+        nav { background:var(--card); border-bottom:1px solid var(--border); padding:16px 48px; display:flex;
+              justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
+        .brand { display:flex; align-items:center; gap:12px; font-size:20px; font-weight:700; }
+        .brand-icon { background:var(--grad); color:#fff; width:38px; height:38px; border-radius:10px;
+                      display:flex; align-items:center; justify-content:center; }
+        .nav-links { display:flex; align-items:center; gap:22px; }
+        nav a { color:var(--text); text-decoration:none; font-size:14px; font-weight:500; }
+        nav a:hover { color:var(--primary); }
+        .nav-user { font-size:14px; color:var(--muted); }
+        .logout-btn { background:#fee2e2; color:#dc2626; border:none; padding:8px 16px; border-radius:8px;
+                      cursor:pointer; font-size:14px; font-weight:600; }
+        .container { max-width:1100px; margin:36px auto; padding:0 28px; }
+        .banner { background:var(--grad); color:#fff; padding:40px; border-radius:20px; margin-bottom:28px; }
+        .banner h1 { margin:0 0 10px; font-size:30px; } .banner p { margin:0; opacity:.9; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:22px; margin-bottom:28px; }
+        .card { background:var(--card); border:1px solid var(--border); padding:26px; border-radius:16px; margin-bottom:22px; }
+        .grid .card { margin-bottom:0; }
+        .card h3 { margin:0 0 6px; font-size:16px; } .card p { margin:0 0 12px; font-size:14px; color:var(--muted); }
+        .stat { font-size:34px; font-weight:700; color:var(--primary); } .stat.ok { color:var(--ok); }
+        .card-link { font-size:14px; font-weight:600; color:var(--primary); text-decoration:none; }
+        table { width:100%; border-collapse:collapse; }
+        th, td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--border); font-size:14px; }
+        th { color:var(--muted); font-weight:600; }
+        .btn { display:inline-block; background:var(--primary); color:#fff; border:none; padding:9px 16px;
+               border-radius:8px; font-size:14px; font-weight:600; text-decoration:none; cursor:pointer; }
+        .btn.small { padding:5px 10px; font-size:13px; } .btn.warn { background:#dc2626; } .btn.gray { background:#64748b; }
+        .badge { padding:3px 9px; border-radius:99px; font-size:12px; font-weight:600; }
+        .badge.on { background:#dcfce7; color:#166534; } .badge.off { background:#fee2e2; color:#991b1b; }
+        .alert { padding:10px 14px; border-radius:8px; margin-bottom:14px; font-size:14px; }
+        .alert-success { background:#e6f6ea; color:#1a6b32; } .alert-danger { background:#fdeaea; color:#a12626; }
+        input, select { padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px; min-width:260px; }
+        td input { min-width:0; width:90px; } .err { color:#dc2626; }
+        .row { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="brand"><div class="brand-icon">🫧</div>LabaTa</div>
+        <div class="nav-links">
+            {% if user_role == "admin" %}
+                <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                <a href="{% url 'manage:shop_list' %}">Shops</a>
+            {% elif user_role == "shop_owner" %}
+                <a href="{% url 'manage:owner_dashboard' %}">Dashboard</a>
+                <a href="{% url 'manage:staff_list' %}">Staff</a>
+                <a href="{% url 'manage:customer_list' %}">Customers</a>
+                <a href="{% url 'orders:services' %}">Services</a>
+                <a href="{% url 'orders:list' %}">Orders</a>
+            {% endif %}
+            <span class="nav-user">{{ request.user.username }}</span>
+            <a href="{% url 'profile' %}">My Profile</a>
+            <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+                {% csrf_token %}<button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container">
+        {% include "orders/_messages.html" %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

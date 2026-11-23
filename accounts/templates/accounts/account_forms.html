@@ -1,0 +1,19 @@
+{% extends "accounts/manage_base.html" %}
+{% block title %}{{ title }} - LabaTa{% endblock %}
+{% block content %}
+<div class="card">
+    <h2 style="margin-top:0;">{{ title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for e in form.non_field_errors %}<p class="err">{{ e }}</p>{% endfor %}
+        {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>{{ field }}
+            {% for e in field.errors %}<br><small class="err">{{ e }}</small>{% endfor %}
+        </p>
+        {% endfor %}
+        <button class="btn" type="submit">{{ submit }}</button>
+        <a href="{% url back %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

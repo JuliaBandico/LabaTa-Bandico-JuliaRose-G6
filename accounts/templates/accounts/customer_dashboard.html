@@ -18,6 +18,7 @@
         button.logout-btn:hover { text-decoration: underline; }
         .action-btn { display: inline-block; background: #00b4d2; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; margin-top: 10px; }
         .action-btn:hover { background: #0077b6; }
+        .big { font-size: 28px; font-weight: bold; color: #00b4d2; margin: 10px 0 0 0; }
     </style>
 </head>
 <body>
@@ -25,6 +26,7 @@
         <div class="brand">🧺 LabaTa Customer Portal</div>
         <div>
             <span>Welcome, <strong>{{ request.user.username }}</strong></span>
+            <a href="{% url 'orders:list' %}">My Orders</a>
             <a href="{% url 'profile' %}">My Profile</a>
             <form action="{% url 'logout' %}" method="POST" style="display:inline;">
                 {% csrf_token %}
@@ -35,24 +37,31 @@
     <div class="container">
         <div class="welcome-banner">
             <h1>Fresh & Clean, Right on Time!</h1>
-            <p>Track your laundry drop-offs, check active washing statuses, and manage your preferences with LabaTa.</p>
+            <p>Track your laundry drop-offs, check active washing statuses, and view your digital receipts with LabaTa.</p>
         </div>
-        
+
         <div class="grid">
             <div class="card">
                 <h3>Current Laundry Status</h3>
-                <p>You have no active loads running right now.</p>
-                <a href="#" class="action-btn">Book New Wash</a>
+                {% if order_stats.active %}
+                    <p>You have laundry in progress.</p>
+                    <p class="big">{{ order_stats.active }} active order{{ order_stats.active|pluralize }}</p>
+                {% else %}
+                    <p>You have no active loads running right now.</p>
+                {% endif %}
+                <a href="{% url 'orders:list' %}?status=washing" class="action-btn">Track Orders</a>
             </div>
             <div class="card">
                 <h3>Order History</h3>
                 <p>View receipts and past completed cycles.</p>
-                <a href="#" class="action-btn">View History</a>
+                <p class="big">{{ order_stats.total }} order{{ order_stats.total|pluralize }}</p>
+                <a href="{% url 'orders:list' %}" class="action-btn">View History</a>
             </div>
             <div class="card">
-                <h3>Reward Points</h3>
-                <p>Earn points on every wash and fold!</p>
-                <p style="font-size: 22px; font-weight: bold; color: #00b4d2; margin: 10px 0 0 0;">150 Points</p>
+                <h3>Ready for Pickup</h3>
+                <p>Show your claim code at the counter.</p>
+                <p class="big">{{ order_stats.ready }}</p>
+                <a href="{% url 'orders:list' %}?status=ready" class="action-btn">See Ready Orders</a>
             </div>
         </div>
     </div>

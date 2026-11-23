@@ -1,0 +1,28 @@
+{% extends "accounts/manage_base.html" %}
+{% block title %}Shops - LabaTa{% endblock %}
+{% block content %}
+<div class="row"><h2 style="margin:0;">Shops</h2><a class="btn" href="{% url 'manage:shop_create' %}">+ New shop</a></div>
+<div class="card">
+<table>
+    <tr><th>Shop</th><th>Owner</th><th>Staff</th><th>Customers</th><th>Status</th><th></th></tr>
+    {% for r in rows %}
+    <tr>
+        <td>{{ r.shop.name }}</td>
+        <td>{{ r.owner.username|default:"—" }}</td>
+        <td>{{ r.shop.staff_count }}</td>
+        <td>{{ r.shop.customer_count }}</td>
+        <td>{% if r.shop.is_active %}<span class="badge on">Active</span>{% else %}<span class="badge off">Suspended</span>{% endif %}</td>
+        <td>
+            <form method="post" action="{% url 'manage:shop_toggle' r.shop.pk %}"
+                  onsubmit="return confirm('{% if r.shop.is_active %}Suspend{% else %}Reactivate{% endif %} {{ r.shop.name|escapejs }}?')">
+                {% csrf_token %}
+                {% if r.shop.is_active %}<button class="btn small warn">Suspend</button>
+                {% else %}<button class="btn small">Reactivate</button>{% endif %}
+            </form>
+        </td>
+    </tr>
+    {% empty %}<tr><td colspan="6">No shops yet. Create the first one.</td></tr>
+    {% endfor %}
+</table>
+</div>
+{% endblock %}

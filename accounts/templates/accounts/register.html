@@ -2,32 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register - Account System</title>
+    <title>Register - LabaTa</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 50px; }
-        .card { max-width: 400px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; }
-        form p { margin-bottom: 15px; }
-        form label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
-        form input, form select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        button { width: 100%; background: #007bff; color: white; border: none; padding: 10px; border-radius: 4px; font-size: 16px; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .footer-link { text-align: center; margin-top: 15px; }
-        .footer-link a { color: #007bff; text-decoration: none; }
-        .errorlist { color: red; font-size: 14px; list-style: none; padding: 0; }
+        body { font-family: system-ui, sans-serif; background: #f4f8fb; margin: 0; }
+        .box { max-width: 420px; margin: 60px auto; background: #fff; padding: 32px; border-radius: 12px;
+               box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+        h2 { margin-top: 0; color: #0077b6; }
+        input, select { width: 100%; padding: 9px; margin-top: 4px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        p { margin: 14px 0; }
+        .err { color: #dc2626; font-size: 13px; }
+        button { width: 100%; background: #00a8cc; color: #fff; border: none; padding: 11px; border-radius: 6px;
+                 font-size: 15px; cursor: pointer; }
+        .alert { padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 14px; }
+        .alert-success { background: #e6f6ea; color: #1a6b32; }
+        .alert-error, .alert-danger { background: #fdeaea; color: #a12626; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Create Account</h2>
-        <form method="POST">
+    <div class="box">
+        <h2>Create your LabaTa account</h2>
+        {% for m in messages %}<div class="alert alert-{{ m.tags }}">{{ m }}</div>{% endfor %}
+        <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            {% for e in form.non_field_errors %}<p class="err">{{ e }}</p>{% endfor %}
+            {% for field in form %}
+            <p>
+                {{ field.label_tag }}<br>{{ field }}
+                {% for e in field.errors %}<br><span class="err">{{ e }}</span>{% endfor %}
+            </p>
+            {% endfor %}
             <button type="submit">Register</button>
         </form>
-        <div class="footer-link">
-            <p>Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
-        </div>
+        <p style="text-align:center;">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
     </div>
 </body>
 </html>
